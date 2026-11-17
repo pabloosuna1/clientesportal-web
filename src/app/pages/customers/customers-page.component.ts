@@ -1,21 +1,10 @@
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 
-interface Customer {
-  id: number;
-  nombre: string;
-  apellidos: string;
-  dni: string;
-  email: string;
-  telefono: string;
-  fechaNacimiento: string;
-  direccion: string;
-  codigoPostal: string;
-  ciudad: string;
-  provincia: string;
-}
+import { Customer } from '../../models/customer.model';
+import { CustomerService } from '../../services/customer.service';
 
 @Component({
   selector: 'app-customers-page',
@@ -26,37 +15,12 @@ interface Customer {
 })
 export class CustomersPageComponent {
 
-  // Listado inicial de clientes de ejemplo
-  customers: Customer[] = [
-    {
-      id: 1,
-      nombre: 'Juan',
-      apellidos: 'García López',
-      dni: '12345678A',
-      email: 'juan@email.com',
-      telefono: '600123456',
-      fechaNacimiento: '1985-05-12',
-      direccion: 'Calle Mayor 15',
-      codigoPostal: '29001',
-      ciudad: 'Málaga',
-      provincia: 'Málaga'
-    },
-    {
-      id: 2,
-      nombre: 'María',
-      apellidos: 'Fernández Ruiz',
-      dni: '87654321B',
-      email: 'maria@email.com',
-      telefono: '611223344',
-      fechaNacimiento: '1990-08-20',
-      direccion: 'Avenida Andalucía 22',
-      codigoPostal: '41001',
-      ciudad: 'Sevilla',
-      provincia: 'Sevilla'
-    }
-  ];
+  private customerService = inject(CustomerService);
 
-  // Control del formulario
+  // Listado de clientes
+  customers: Customer[] = [];
+
+  // Formulario
   customerForm: Customer = this.getEmptyCustomer();
 
   editingId: number | null = null;
@@ -65,10 +29,27 @@ export class CustomersPageComponent {
   // Búsqueda
   searchTerm = '';
 
+  // Paginación
+  currentPage = 1;
+  pageSize = 10;
+
+  pageSizeOptions = [10, 20, 50];
+
   // Mensajes
   successMessage = '';
 
+  constructor() {
+    this.loadCustomers();
+  }
+
+  // Obtener clientes
+  loadCustomers(): void {
+    this.customers = this.customerService.getAll();
+  }
+
+  // Clientes filtrados
   get filteredCustomers(): Customer[] {
+
     const search = this.searchTerm.toLowerCase().trim();
 
     if (!search) {
@@ -86,10 +67,64 @@ export class CustomersPageComponent {
     );
   }
 
+  // Número total de páginas
+  get totalPages(): number {
+    return Math.ceil(this.filteredCustomers.length / this.pageSize);
+  }
+
+  // Clientes correspondientes a la página actual
+  get paginatedCustomers(): Customer[] {
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+
+    return this.filteredCustomers.slice(
+      startIndex,
+      startIndex + this.pageSize
+    );
+  }
+
+  // Primer registro mostrado
+  get startItem(): number {
+    return this.filteredCustomers.length === 0
+      ? 0
+      : (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  // Último registro mostrado
+  get endItem(): number {
+    return Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredCustomers.length
+    );
+  }
+
+  // Comprobar si estamos editando
   get isEditing(): boolean {
     return this.editingId !== null;
   }
 
+  // Cambiar de página
+  changePage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+  }
+
+  // Cambiar registros por página
+  changePageSize(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+  }
+
+  // Buscar clientes
+  onSearch(): void {
+    this.currentPage = 1;
+  }
+
+  // Modelo vacío
   getEmptyCustomer(): Customer {
     return {
       id: 0,
@@ -106,7 +141,7 @@ export class CustomersPageComponent {
     };
   }
 
-  // Abrir formulario de creación
+  // Nuevo cliente
   newCustomer(): void {
     this.editingId = null;
     this.customerForm = this.getEmptyCustomer();
@@ -114,7 +149,7 @@ export class CustomersPageComponent {
     this.successMessage = '';
   }
 
-  // Abrir formulario de edición
+  // Editar cliente
   editCustomer(customer: Customer): void {
     this.editingId = customer.id;
     this.customerForm = { ...customer };
@@ -122,7 +157,7 @@ export class CustomersPageComponent {
     this.successMessage = '';
   }
 
-  // Guardar cliente (crear o actualizar)
+  // Guardar cliente
   saveCustomer(form: NgForm): void {
 
     if (form.invalid) {
@@ -130,28 +165,30 @@ export class CustomersPageComponent {
       return;
     }
 
+    const { id, ...customerData } = this.customerForm;
+
     if (this.isEditing) {
 
-      this.customers = this.customers.map(customer =>
-        customer.id === this.editingId
-          ? { ...this.customerForm, id: customer.id }
-          : customer
+      const updated = this.customerService.update(
+        this.editingId!,
+        customerData
       );
+
+      if (!updated) {
+        return;
+      }
 
       this.successMessage = 'Cliente actualizado correctamente.';
 
     } else {
 
-      const newCustomer: Customer = {
-        ...this.customerForm,
-        id: this.getNextId()
-      };
-
-      this.customers = [...this.customers, newCustomer];
+      this.customerService.create(customerData);
 
       this.successMessage = 'Cliente creado correctamente.';
+      this.currentPage = 1;
     }
 
+    this.loadCustomers();
     this.closeForm();
   }
 
@@ -166,11 +203,18 @@ export class CustomersPageComponent {
       return;
     }
 
-    this.customers = this.customers.filter(
-      item => item.id !== customer.id
-    );
+    const deleted = this.customerService.delete(customer.id);
 
-    this.successMessage = 'Cliente eliminado correctamente.';
+    if (deleted) {
+      this.loadCustomers();
+
+      // Ajustar página si hemos eliminado el último registro
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = Math.max(1, this.totalPages);
+      }
+
+      this.successMessage = 'Cliente eliminado correctamente.';
+    }
   }
 
   // Cerrar formulario
@@ -180,16 +224,8 @@ export class CustomersPageComponent {
     this.customerForm = this.getEmptyCustomer();
   }
 
-  // Generar identificador
-  private getNextId(): number {
-    return this.customers.length
-      ? Math.max(...this.customers.map(c => c.id)) + 1
-      : 1;
-  }
-
   // Limpiar mensaje
   clearMessage(): void {
     this.successMessage = '';
   }
 }
-
