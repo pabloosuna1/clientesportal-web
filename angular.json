@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "angular-starter-layout": {
+    "clientesportal-web": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "angular-starter-layout:build:production"
+              "buildTarget": "clientesportal-web:build:production"
             },
             "development": {
-              "buildTarget": "angular-starter-layout:build:development"
+              "buildTarget": "clientesportal-web:build:development"
             }
           },
           "defaultConfiguration": "development"
