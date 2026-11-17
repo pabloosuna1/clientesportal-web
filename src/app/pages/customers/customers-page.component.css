@@ -1,0 +1,427 @@
+
+:host {
+  display: block;
+}
+
+/* CONTENEDOR GENERAL */
+
+.customers-container {
+  width: 100%;
+  color: #192b43;
+}
+
+/* CABECERA */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.eyebrow {
+  color: #2479bb;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+h1 {
+  margin: .5rem 0;
+  font-size: 2rem;
+  color: #192b43;
+}
+
+.page-header p {
+  margin: 0;
+  color: #718096;
+}
+
+/* BOTONES */
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: .75rem 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn-primary {
+  background: #2479bb;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #195f98;
+}
+
+.btn-primary span {
+  font-size: 1.2rem;
+  margin-right: .3rem;
+}
+
+.btn-secondary {
+  background: #edf2f7;
+  color: #40536a;
+}
+
+.btn-secondary:hover {
+  background: #dfe7ef;
+}
+
+/* MENSAJES */
+
+.success-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e7f7ed;
+  color: #247a45;
+  padding: .9rem 1.2rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+}
+
+.success-message button {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* TARJETAS */
+
+.content-card {
+  background: #fff;
+  border: 1px solid #e3eaf1;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(30, 60, 90, .04);
+  overflow: hidden;
+}
+
+/* BARRA DE BÚSQUEDA */
+
+.toolbar {
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  background: #f7f9fc;
+  border: 1px solid #e1e8f0;
+  border-radius: 8px;
+  padding: 0 .9rem;
+  width: 360px;
+  max-width: 100%;
+}
+
+.search-box span {
+  font-size: 1.4rem;
+  color: #8494a8;
+}
+
+.search-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: .75rem 0;
+  background: transparent;
+  font-size: .9rem;
+}
+
+.customer-count {
+  color: #718096;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+/* TABLA */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead {
+  background: #f8fafc;
+}
+
+th {
+  padding: 1rem 1.2rem;
+  font-size: .7rem;
+  letter-spacing: .06em;
+  color: #718096;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+td {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid #edf1f5;
+  color: #43546a;
+  font-size: .87rem;
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background: #fafcff;
+}
+
+/* INFORMACIÓN DEL CLIENTE */
+
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+
+.customer-info strong {
+  display: block;
+  color: #253951;
+  font-size: .9rem;
+}
+
+.customer-info small {
+  display: block;
+  margin-top: .25rem;
+  color: #98a4b3;
+  font-size: .75rem;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5f1fb;
+  color: #2479bb;
+  font-weight: 800;
+  font-size: .8rem;
+}
+
+/* ACCIONES */
+
+.actions-column {
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: .2s;
+}
+
+.edit {
+  background: #e8f2fb;
+  color: #2479bb;
+}
+
+.edit:hover {
+  background: #d4e8fa;
+}
+
+.delete {
+  background: #fff0f0;
+  color: #d94c4c;
+}
+
+.delete:hover {
+  background: #ffdddd;
+}
+
+/* ESTADO VACÍO */
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state strong,
+.empty-state span {
+  display: block;
+}
+
+.empty-state strong {
+  color: #30445d;
+  margin-bottom: .5rem;
+}
+
+.empty-state span {
+  color: #8997a8;
+}
+
+/* FORMULARIO */
+
+.form-card {
+  padding: 1.5rem;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.form-header h2 {
+  margin: 0 0 .4rem;
+  font-size: 1.3rem;
+  color: #253951;
+}
+
+.form-header p {
+  margin: 0;
+  color: #8491a2;
+  font-size: .9rem;
+}
+
+.btn-close {
+  border: none;
+  background: #f1f4f8;
+  color: #52647a;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* SECCIONES DEL FORMULARIO */
+
+.form-section {
+  margin-bottom: 1.8rem;
+}
+
+.form-section h3 {
+  font-size: .95rem;
+  color: #2479bb;
+  margin-bottom: 1.2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+.form-group label {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #52647a;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dce4ed;
+  border-radius: 7px;
+  padding: .75rem .85rem;
+  outline: none;
+  color: #30445d;
+  font-size: .9rem;
+  transition: .2s;
+}
+
+.form-group input:focus {
+  border-color: #2479bb;
+  box-shadow: 0 0 0 3px rgba(36, 121, 187, .1);
+}
+
+.form-group input.ng-invalid.ng-touched {
+  border-color: #dc5555;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.error {
+  color: #d94c4c;
+  font-size: .75rem;
+}
+
+/* ACCIONES DEL FORMULARIO */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .8rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid #edf1f5;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .search-box {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

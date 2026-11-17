@@ -1,0 +1,310 @@
+
+<div class="customers-container">
+
+  <!-- CABECERA -->
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">GESTIÓN</span>
+      <h1>Clientes</h1>
+      <p>Administra la información de tus clientes.</p>
+    </div>
+
+    <button class="btn btn-primary" (click)="newCustomer()">
+      <span>+</span> Nuevo cliente
+    </button>
+  </div>
+
+  <!-- MENSAJE -->
+  @if (successMessage) {
+    <div class="success-message">
+      {{ successMessage }}
+      <button (click)="clearMessage()">×</button>
+    </div>
+  }
+
+  <!-- LISTADO -->
+  @if (!showForm) {
+
+    <div class="content-card">
+
+      <div class="toolbar">
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            placeholder="Buscar por nombre, DNI o email..."
+            [(ngModel)]="searchTerm">
+        </div>
+
+        <span class="customer-count">
+          {{ filteredCustomers.length }}
+          clientes
+        </span>
+      </div>
+
+      <div class="table-responsive">
+
+        <table>
+          <thead>
+            <tr>
+              <th>CLIENTE</th>
+              <th>DNI / NIF</th>
+              <th>EMAIL</th>
+              <th>TELÉFONO</th>
+              <th>LOCALIDAD</th>
+              <th class="actions-column">ACCIONES</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (customer of filteredCustomers; track customer.id) {
+              <tr>
+
+                <td>
+                  <div class="customer-info">
+                    <div class="avatar">
+                      {{ customer.nombre.charAt(0) }}{{ customer.apellidos.charAt(0) }}
+                    </div>
+
+                    <div>
+                      <strong>
+                        {{ customer.nombre }} {{ customer.apellidos }}
+                      </strong>
+                      <small>Cliente #{{ customer.id }}</small>
+                    </div>
+                  </div>
+                </td>
+
+                <td>{{ customer.dni }}</td>
+
+                <td>{{ customer.email }}</td>
+
+                <td>{{ customer.telefono || '-' }}</td>
+
+                <td>{{ customer.ciudad || '-' }}</td>
+
+                <td>
+                  <div class="actions">
+                    <button
+                      class="btn-icon edit"
+                      title="Editar"
+                      (click)="editCustomer(customer)">
+                      ✎
+                    </button>
+
+                    <button
+                      class="btn-icon delete"
+                      title="Eliminar"
+                      (click)="deleteCustomer(customer)">
+                      ×
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            } @empty {
+
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <strong>No hay clientes</strong>
+                  <span>
+                    No se han encontrado clientes con los criterios indicados.
+                  </span>
+                </td>
+              </tr>
+
+            }
+
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  }
+
+  <!-- FORMULARIO -->
+  @if (showForm) {
+
+    <div class="content-card form-card">
+
+      <div class="form-header">
+        <div>
+          <h2>
+            {{ isEditing ? 'Editar cliente' : 'Nuevo cliente' }}
+          </h2>
+
+          <p>
+            {{ isEditing
+              ? 'Modifica los datos del cliente.'
+              : 'Introduce los datos personales del nuevo cliente.' }}
+          </p>
+        </div>
+
+        <button class="btn-close" (click)="closeForm()">×</button>
+      </div>
+
+      <form #customerNgForm="ngForm"
+            (ngSubmit)="saveCustomer(customerNgForm)">
+
+        <!-- DATOS PERSONALES -->
+        <div class="form-section">
+          <h3>Datos personales</h3>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Nombre *</label>
+              <input
+                type="text"
+                name="nombre"
+                [(ngModel)]="customerForm.nombre"
+                required
+                #nombre="ngModel"
+                placeholder="Nombre">
+              @if (nombre.invalid && nombre.touched) {
+                <small class="error">El nombre es obligatorio.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Apellidos *</label>
+              <input
+                type="text"
+                name="apellidos"
+                [(ngModel)]="customerForm.apellidos"
+                required
+                #apellidos="ngModel"
+                placeholder="Apellidos">
+              @if (apellidos.invalid && apellidos.touched) {
+                <small class="error">Los apellidos son obligatorios.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>DNI / NIF *</label>
+              <input
+                type="text"
+                name="dni"
+                [(ngModel)]="customerForm.dni"
+                required
+                #dni="ngModel"
+                placeholder="12345678A">
+              @if (dni.invalid && dni.touched) {
+                <small class="error">El DNI es obligatorio.</small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Fecha de nacimiento</label>
+              <input
+                type="date"
+                name="fechaNacimiento"
+                [(ngModel)]="customerForm.fechaNacimiento">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CONTACTO -->
+        <div class="form-section">
+          <h3>Datos de contacto</h3>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Email *</label>
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="customerForm.email"
+                required
+                email
+                #email="ngModel"
+                placeholder="cliente@email.com">
+
+              @if (email.invalid && email.touched) {
+                <small class="error">
+                  Introduce un email válido.
+                </small>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input
+                type="tel"
+                name="telefono"
+                [(ngModel)]="customerForm.telefono"
+                placeholder="600 000 000">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DIRECCIÓN -->
+        <div class="form-section">
+          <h3>Dirección</h3>
+
+          <div class="form-grid">
+
+            <div class="form-group full-width">
+              <label>Dirección</label>
+              <input
+                type="text"
+                name="direccion"
+                [(ngModel)]="customerForm.direccion"
+                placeholder="Calle, número, piso...">
+            </div>
+
+            <div class="form-group">
+              <label>Código postal</label>
+              <input
+                type="text"
+                name="codigoPostal"
+                [(ngModel)]="customerForm.codigoPostal"
+                placeholder="29001">
+            </div>
+
+            <div class="form-group">
+              <label>Localidad</label>
+              <input
+                type="text"
+                name="ciudad"
+                [(ngModel)]="customerForm.ciudad"
+                placeholder="Localidad">
+            </div>
+
+            <div class="form-group">
+              <label>Provincia</label>
+              <input
+                type="text"
+                name="provincia"
+                [(ngModel)]="customerForm.provincia"
+                placeholder="Provincia">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeForm()">
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary">
+            {{ isEditing ? 'Guardar cambios' : 'Crear cliente' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  }
+
+</div>
